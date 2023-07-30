@@ -1,4 +1,4 @@
-import {ADD_ORDER, ORDER_COMPLETE, REMOVE_ORDER} from './action.type';
+import {ADD_ORDER, ORDER_COMPLETE_STATUS, REMOVE_ORDER} from './action.type';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -14,11 +14,10 @@ const reducer = (state, action) => {
       delete orders[id];
       return {...state, orders};
     }
-    case ORDER_COMPLETE: {
-      const id = action.payload;
+    case ORDER_COMPLETE_STATUS: {
+      const id = action.payload.id;
       const orders = state.orders;
-      orders[id].completed = true;
-      console.log('id', id);
+      orders[id].completed = action.payload.value;
       return {...state, orders};
     }
     default:
