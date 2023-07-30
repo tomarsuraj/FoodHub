@@ -1,11 +1,14 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
-
-const AddOrder = ({onAddOrder}) => {
+import uuid from 'react-native-uuid';
+import {userContext} from '../context/userContext';
+import {ADD_ORDER} from '../context/action.type';
+const AddOrder = ({navigation}) => {
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [tableId, setTableId] = useState('');
   const [dishes, setDishes] = useState('');
+  const {dispatch} = useContext(userContext);
 
   const handleAddOrder = () => {
     if (!customerName || !phone || !tableId || !dishes) {
@@ -14,7 +17,7 @@ const AddOrder = ({onAddOrder}) => {
     }
 
     const newOrder = {
-      id: Math.random().toString(), // This is not ideal for generating IDs, but it works for this example
+      id: uuid.v4(),
       customerName,
       phone,
       tableId: parseInt(tableId),
@@ -22,11 +25,18 @@ const AddOrder = ({onAddOrder}) => {
       completed: false,
     };
 
-    onAddOrder(newOrder);
+    dispatch({
+      type: ADD_ORDER,
+      payload: {
+        id: newOrder.id,
+        newOrder,
+      },
+    });
     setCustomerName('');
     setPhone('');
     setTableId('');
     setDishes('');
+    navigation.navigate('Orders');
   };
 
   return (

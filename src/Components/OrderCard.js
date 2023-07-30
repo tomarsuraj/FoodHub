@@ -1,15 +1,12 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Switch} from 'react-native';
+import {userContext} from '../context/userContext';
+import {ORDER_COMPLETE, REMOVE_ORDER} from '../context/action.type';
 
-const OrderCard = () => {
-  const order = {
-    customerName: 'Suraj Tomar',
-    phone: 8192080087,
-    tableId: '123',
-    dishes: ['Smith', 'John', 'John', 'Doe'],
-    completed: false,
-  };
-  const {customerName, phone, tableId, dishes, completed} = order;
+const OrderCard = ({order}) => {
+  const {dispatch} = useContext(userContext);
+  const {customerName, phone, tableId, dishes, completed, id} = order;
+
   return (
     <View style={[styles.container, completed && styles.completedOrder]}>
       <Text style={styles.customerName}>{customerName}</Text>
@@ -27,7 +24,7 @@ const OrderCard = () => {
             trackColor={{false: '#767577', true: '#81b0ff'}}
             thumbColor={completed ? '#f5dd4b' : '#f4f3f4'}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {}}
+            onValueChange={() => dispatch({type: ORDER_COMPLETE, payload: id})}
             value={completed}
           />
         </View>
@@ -35,7 +32,7 @@ const OrderCard = () => {
         {!completed && (
           <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => handleDelete(order.id)}>
+            onPress={() => dispatch({type: REMOVE_ORDER, payload: id})}>
             <Text style={styles.deleteText}>Delete</Text>
           </TouchableOpacity>
         )}
